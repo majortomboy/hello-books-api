@@ -6,6 +6,7 @@ books_bp = Blueprint("books", __name__, url_prefix="/books")
 
 @books_bp.route("", methods=["GET", "POST"])
 def handle_books():
+    # return make_response("I'm a teapot!", 418)
     if request.method == "GET":
         title_query = request.args.get("title")
         if title_query:
