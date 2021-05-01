@@ -1,3 +1,64 @@
-from flask import Blueprint
+from app import db
+from app.models.book import Book
+from flask import request, Blueprint, make_response, jsonify
 
-hello_world_bp = Blueprint("hello_world", __name__)
+books_bp = Blueprint("books", __name__, url_prefix="/books")
+
+@books_bp.route("", methods=["GET", "POST"])
+def handle_books():
+    if request.method == "GET":
+        books = Book.query.all()
+        books_response = []
+        for book in books:
+            books_response.append({
+                "id": book.id,
+                "title": book.title,
+                "description": book.description
+            })
+        return jsonify(books_response)
+    elif resuest.method == "POST":
+        request_body = request.get_json()
+        new_book = Book(title=request_body["title"],
+        description=request_body["description"])
+
+        db.session.add(new_book)
+        db.session.commit()
+
+        return make_response(f"Book {new_book.title} successfully created", 201)
+
+@books_bp.route("/<book_id>", methods=["GET"])
+def handle_book(book_id):
+    book = Book.query.get(book_id)
+
+    return {
+        "id": book.id,
+        "title": book.title,
+        "description": book.description
+    }
+
+# hello_world_bp = Blueprint("hello_world", __name__)
+
+# @hello_world_bp.route("/hello_world", methods=["GET"])
+# def say_hello_world():
+#     response_body = "Hello, World!"
+#     return response_body
+
+# @hello_world_bp.route("/hello/JSON", methods=["GET"])
+# def make_hobbies_dict():
+#     hobbies_dict = {
+#         "name" : "Sid DuPont",
+#         "message" : "I love Kiyoshi!",
+#         "hobbies" : ["Hiking", "Cosplaying", "Video Games"]
+#     }
+#     return hobbies_dict
+
+# @hello_world_bp.route("/broken-endpoint-with-broken-server-code", methods=["GET", "POST"])
+# def broken_endpoint():
+#     response_body = {
+#         "name": "Ada Lovelace",
+#         "message": "Hello!",
+#         "hobbies": ["Fishing", "Swimming", "Watching Reality Shows"]
+#     }
+#     new_hobby = "Surfing"
+#     response_body["hobbies"].append(new_hobby)
+#     return response_body
