@@ -11,7 +11,7 @@ def handle_books():
         if title_query:
             books = Book.query.filter_by(title=title_query)
         else:
-            books = Books.query.all()
+            books = Book.query.all()
 
         books_response = []
         for book in books:
