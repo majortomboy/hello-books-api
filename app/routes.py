@@ -7,7 +7,12 @@ books_bp = Blueprint("books", __name__, url_prefix="/books")
 @books_bp.route("", methods=["GET", "POST"])
 def handle_books():
     if request.method == "GET":
-        books = Book.query.all()
+        title_query = request.args.get("title")
+        if title_query:
+            books = Book.query.filter_by(title=title_query)
+        else:
+            books = Books.query.all()
+
         books_response = []
         for book in books:
             books_response.append({
@@ -16,7 +21,7 @@ def handle_books():
                 "description": book.description
             })
         return jsonify(books_response)
-    elif resuest.method == "POST":
+    elif request.method == "POST":
         request_body = request.get_json()
         new_book = Book(title=request_body["title"],
         description=request_body["description"])
